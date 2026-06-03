@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulir Kontak ke Telegram</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .form-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        input, textarea, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #0088cc;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #006699;
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <h3>Kirim Pesan ke Telegram</h3>
+    <form id="telegramForm">
+        <input type="text" id="nama" placeholder="Nama Anda" required>
+        <textarea id="pesan" placeholder="Tulis pesan di sini..." rows="4" required></textarea>
+        <button type="submit">Kirim ke Bot</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById('telegramForm').addEventListener('submit', function(e) {
+        e.preventDefault(); // Mencegah halaman memuat ulang
+
+        // Ganti dengan Token Bot dan Chat ID milik Anda
+        const TELEGRAM_TOKEN = 'Isi_Dengan_Token_Bot_Anda';
+        const TELEGRAM_CHAT_ID = 'Isi_Dengan_Chat_ID_Anda';
+
+        const nama = document.getElementById('nama').value;
+        const pesan = document.getElementById('pesan').value;
+
+        // Menyusun format teks yang akan dikirim
+        const teksPesan = `🔔 *Pesan Baru Terinput*\n\n👤 *Nama:* ${nama}\n💬 *Pesan:* ${pesan}`;
+
+        // URL API Telegram untuk sendMessage
+        const url = `https://telegram.org{TELEGRAM_TOKEN}/sendMessage`;
+
+        // Mengirim data menggunakan Fetch API
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                chat_id: TELEGRAM_CHAT_ID,
+                text: teksPesan,
+                parse_mode: 'Markdown' // Mengaktifkan format tebal/miring
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.ok) {
+                alert('Pesan berhasil dikirim ke Telegram Bot!');
+                document.getElementById('telegramForm').reset(); // Mengosongkan form
+            } else {
+                alert('Gagal mengirim pesan. Periksa Token atau Chat ID.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan jaringan.');
+        });
+    });
+</script>
+
+</body>
+</html>
